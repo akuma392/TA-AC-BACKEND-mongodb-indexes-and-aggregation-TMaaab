@@ -6,21 +6,92 @@ Write aggregation queries to perform following tasks.
 
 1. Find all users who are active.
 
+```js
+db.users.aggregate([{ $match: { isActive: true } }]).pretty();
+```
+
 2. Find all users whose name includes `blake` case insensitive.
+
+```js
+db.users
+  .aggregate([{ $match: { name: { $regex: 'blake', $options: 'i' } } }])
+  .pretty();
+```
 
 3. Find all males.
 
+```js
+db.users.aggregate([{ $match: { gender: 'male' } }, {}]).pretty();
+```
+
 4. Find all active males.
+
+```js
+db.users.aggregate([{ $match: { isActive: true, gender: 'male' } }]).pretty();
+```
 
 5. Find all active females whose age is >= 25.
 
+```js
+db.users
+  .aggregate([
+    { $match: { isActive: true, gender: 'female', age: { $gte: 25 } } },
+  ])
+  .pretty();
+```
+
 6. Find all 40+ males with green eyecolor.
 
+```js
+db.users
+  .aggregate([
+    { $match: { eyecolor: 'green', gender: 'male', age: { $gte: 40 } } },
+  ])
+  .pretty();
+```
+
 7. Find all blue eyed men working in 'USA'.
+
+```js
+db.users
+  .aggregate([
+    {
+      $match: {
+        eyecolor: 'blue',
+        gender: 'male',
+        country: { company: { location: 'USA' } },
+      },
+    },
+  ])
+  .pretty();
+
+db.users
+  .aggregate([
+    {
+      $match: {
+        eyecolor: 'blue',
+        gender: 'male',
+        'company.country.location': 'USA',
+      },
+    },
+  ])
+  .pretty();
+```
 
 8. Find all female working in Germany with green eyes and apple as favoriteFruit.
 
 9. Count total male and females.
+
+```js
+db.users.aggregate([
+  {
+    $group: {
+      _id: '$gender',
+      count: { $sum: 1 },
+    },
+  },
+]);
+```
 
 10. Count all whose eyeColor is green.
 
