@@ -95,7 +95,21 @@ db.users.aggregate([
 
 10. Count all whose eyeColor is green.
 
+```js
+db.users.aggregate([
+  { $match: { eyeColor: 'green' } },
+  { $group: { _id: '$eyeColor', count: { $sum: 1 } } },
+]);
+```
+
 11. Count all 20+ females who have brown eyes.
+
+```js
+db.users.aggregate([
+  { $match: { eyeColor: 'brown', gender: 'female', age: { $gte: 20 } } },
+  { $group: { _id: '$eyeColor', count: { $sum: 1 } } },
+]);
+```
 
 12. Count all occurences of all eyeColors.
     Something like:-
@@ -106,7 +120,18 @@ brown -> 67
 green -> 123
 ```
 
+```js
+db.users.aggregate([{ $group: { _id: '$eyeColor', count: { $sum: 1 } } }]);
+```
+
 13. Count all females whose tags array include `amet` in it.
+
+```js
+db.users.aggregate([
+  { $match: { tags: { $in: ['amet'] }, gender: 'female' } },
+  { $group: { _id: '$gender', count: { $sum: 1 } } },
+]);
+```
 
 14. Find the average age of entire collection
 
