@@ -69,9 +69,9 @@ db.users
   .aggregate([
     {
       $match: {
-        eyecolor: 'blue',
+        eyeColor: 'blue',
         gender: 'male',
-        'company.country.location': { $in: ['USA'] },
+        'company.location.country': "USA",
       },
     },
   ])
@@ -198,8 +198,7 @@ db.users.aggregate([
   },
 ]);
 
-db.users
-  .aggregate({
+db.users.aggregate({
     $group: {
       _id: '$eyeColor',
       records: {
@@ -209,8 +208,16 @@ db.users
         $sum: 1,
       },
     },
-  })
-  .pretty();
+  }).pretty();
+
+  db.users.aggregate({
+    {$match :{gender : male}},
+    {
+    $group: {
+      _id: '$eyeColor',
+      },
+    },
+  }).pretty();
 ```
 
 20. group all 30+ females by their age.
